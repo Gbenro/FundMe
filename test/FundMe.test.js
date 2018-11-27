@@ -97,9 +97,19 @@ describe('Inbox', () => {
       from: accounts[0],
       gas: 3000000
     })
-
     let isLive = await fundMe.methods.ongoing().call()
+    // check fundraiser status
+    assert(!isLive)
+  })
 
+  it('allows fundraiser to end after reaching Goal', async () => {
+    await fundMe.methods.donate().send({
+      value: web3.utils.toWei('1', 'ether'),
+      from: accounts[1],
+      gas: 3000000
+    })
+    let isLive = await fundMe.methods.ongoing().call()
+    // check fundraiser status
     assert(!isLive)
   })
 })
