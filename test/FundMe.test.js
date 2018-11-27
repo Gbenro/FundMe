@@ -56,4 +56,36 @@ describe('Inbox', () => {
     const recipient = await fundMe.methods.recipient().call()
     assert.equal(accounts[0], recipient)
   })
+
+  it('allows people to donate money and checks if they donated', async () => {
+    // donating to the fundraiser
+    await fundMe.methods.donate().send({
+      value: web3.utils.toWei('.5', 'ether'),
+      from: accounts[1],
+      gas: 3000000
+    })
+
+    const amount = await fundMe.methods.donorsAmount(accounts[1]).call() // gets the amount donated
+    console.log(amount)
+    assert(amount > 0) // checks if the amount donated is greater than 0
+  })
+
+  it('allows recipient to withdraw money from contract', async () => {
+    // doanting to the fundraiser
+    await fundMe.methods.donate().send({
+      value: web3.utils.toWei('.5', 'ether'),
+      from: accounts[1],
+      gas: 3000000
+    })
+
+    // recipeint withdraws money from the contract
+    await fundMe.methods.withdraw().send({
+      from: accounts[0],
+      gas: 3000000
+    })
+
+    let balance = await web3.eth.getBalance(fundMeAddress)
+    console.log(balance)
+    assert(balance == 0)
+  })
 })
