@@ -8,7 +8,7 @@ const compiledFundMe = require('../build/FundMe.json')
 
 // The list of accounts from ganache
 let accounts
-// The Instance FundMeFactory contract
+// The Instance of a FundMeFactory contract
 let factory
 // The fundMe contract address
 let fundMeAddress
@@ -21,7 +21,7 @@ beforeEach(async () => {
   // deploying the Fundme factory contract to the blockcahin
   factory = await new web3.eth.Contract(JSON.parse(compiledFactory.interface))
     .deploy({ data: compiledFactory.bytecode })
-    .send({ from: accounts[0], gas: '1000000' })
+    .send({ from: accounts[0], gas: '3000000' })
 
   // calling the createFundMe method in fundMeFactory to create a new FundMe contract
   await factory.methods
@@ -33,7 +33,7 @@ beforeEach(async () => {
     )
     .send({
       from: accounts[0],
-      gas: '1000000'
+      gas: '3000000'
     })
 
   // getting the address of the created fundme contract
@@ -46,4 +46,9 @@ beforeEach(async () => {
   )
 })
 
-describe('Inbox', () => {})
+describe('Inbox', () => {
+  it('deploys a factory and a campaign', () => {
+    assert.ok(factory.options.address)
+    assert.ok(fundMe.options.address)
+  })
+})
