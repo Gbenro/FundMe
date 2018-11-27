@@ -71,19 +71,20 @@ describe('Inbox', () => {
   })
 
   it('allows recipient to withdraw money from contract', async () => {
-    // doanting to the fundraiser
+    // donating to the fundraiser
     await fundMe.methods.donate().send({
       value: web3.utils.toWei('.5', 'ether'),
       from: accounts[1],
       gas: 3000000
     })
 
-    // recipeint withdraws money from the contract
+    // recipient withdraws money from the contract
     await fundMe.methods.withdraw().send({
       from: accounts[0],
       gas: 3000000
     })
-
+    // gets the balance of the contract
+    // check if balance is 0
     let balance = await web3.eth.getBalance(fundMeAddress)
     console.log(balance)
     assert(balance == 0)

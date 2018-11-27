@@ -60,6 +60,8 @@ contract FundMe{
     uint public amountSoFar = 0;
     //we keep track of all the donations to this fundraiser here
     Donation[] public donations;
+    //to know whetehr fundraiser is still on going or not
+    bool public ongoing = true;
     
     //EVENTS
     //event for when a contract is created. Shows owner address, contract address and description of fundraiser
@@ -72,6 +74,7 @@ contract FundMe{
     event Fundraiser_Ended(address indexed _from, address indexed _contract, uint _value );
     //event for when recipient withdraws money from the fundraiser contract. shows the owner address, contract address and amount withdrawn
     event Fund_Withdrawn(address indexed _from, address indexed _contract, uint _value);
+    
     ///@notice only fundraiser/recipient can perform action
     modifier restricted(){
         require(
@@ -81,6 +84,17 @@ contract FundMe{
         _;
 
     }
+    ///@notice to check if the fundraiser is still ongoing or ended
+    modifier isLive(){
+        require(
+            ongoing,
+            "This fundraiser has ended"
+            );
+        _;
+
+    }
+    
+    
     
     ///@notice contructor to FundMe contract
     ///@param _firstName the firstname of the recipient
@@ -100,7 +114,8 @@ contract FundMe{
     
     ///@notice payable function, takes contribution for the fundraiser
     ///@dev this function also called _createDonation() and kills the contract when fundraising goal has been reached
-    function donate() public payable{
+    function donate() public isLive payable{
+        
         donorsAmount[msg.sender] = msg.value; //keeps track of the amount that each donor contributes;
         amountSoFar += msg.value;// add amount donated to total contributions 
         donors++;// increment the number of donors
@@ -112,7 +127,7 @@ contract FundMe{
         // if goal of fundraiser has been reached, end the fundraiser. 
         //This contract does not allow raising more than what was specified from start
         if (amountSoFar >= amountNeeded){
-            _kill();
+            _end();
         }
     }
     ///@notice creates a new donation and adds it the the donoation array
@@ -131,7 +146,8 @@ contract FundMe{
     
     ///@notice allows for withdrawing funds from contract
     ///@dev Only reciepient can withdraw funds from this contract
-    function withdraw() public restricted {
+    ///@dev all funds can be remooved anytime
+    function withdraw() public restricted isLive{
         //balance stores the amount of money in the contract at this moment
         uint balance = getBalance();
         // checks if there is money in the account
@@ -140,28 +156,29 @@ contract FundMe{
             "Contract balance is 0"
         );
         emit Fund_Withdrawn(recipient,address(this),balance);//sends out event that contract owner/recipient have withdrew some funds
-        recipient.transfer(address(this).balance);// sends the account balance to recipient, this ensures that fund can be removed anytime
+        recipient.transfer(address(this).balance);// sends the account balance to recipient
     }
     ///@notice gets the balance of the contract
     ///@return returns the balance of the contract
-    function getBalance() public view returns(uint){
+    function getBalance() public view isLive returns(uint){
         return address(this).balance;
     }
     
     ///@notice allows for ending the fundraiser
     ///@dev can only be called by recipient
-    function kill() public restricted{
+    function end() public restricted isLive{
+        ongoing = false;
         emit Fundraiser_Ended(recipient, address(this),amountSoFar); //sends out event that fundraiser has been ended
-        selfdestruct(recipient);// kills the contract from the blockchain and sends contract balance to recipient
+        recipient.transfer(address(this).balance);// kills the contract from the blockchain and sends contract balance to recipient
         
     }
     
     ///@notice private function, ends the fundraiser when amountNeed is reached
     ///@dev should be called by donate() when amountNeeded is reached
-    function _kill() private {
-       
+    function _end() private {
+        ongoing = false;
         emit Goal_Reached(recipient, address(this),amountSoFar); //sends out event that fundraisering goal has been reached
-        selfdestruct(recipient);//kills the contract from the blockchain and sends contract balance to recipient
+        recipient.transfer(address(this).balance);//ends the fundraiser and sends contract balance to recipient
         
     }
     
