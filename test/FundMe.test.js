@@ -51,4 +51,9 @@ describe('Inbox', () => {
     assert.ok(factory.options.address)
     assert.ok(fundMe.options.address)
   })
+
+  it('marks caller as the fundMe recipient', async () => {
+    const recipient = await fundMe.methods.recipient().call()
+    assert.equal(accounts[0], recipient)
+  })
 })
