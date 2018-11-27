@@ -154,6 +154,28 @@ describe('Inbox', () => {
     assert(isLive)
   })
 
+  it('does not collect donation after fundraiser has ended', async () => {
+    // recipient ends fundraiser
+    await fundMe.methods.end().send({
+      from: accounts[0],
+      gas: 3000000
+    })
+    let isLive = await fundMe.methods.ongoing().call()
+    // check fundraiser status
+    assert(!isLive)
+    try {
+      // someone tries to donate after fundraiser was ended
+      await fundMe.methods.donate().send({
+        value: web3.utils.toWei('.5', 'ether'),
+        from: accounts[2],
+        gas: 3000000
+      })
+      assert(false)
+    } catch (err) {
+      assert(err)
+    }
+  })
+
   // END TO END TEST
   // contract takes two donations
   // checks if two people donated
@@ -166,7 +188,8 @@ describe('Inbox', () => {
   // checks if goal was reached
   // checks if recipient's balance is greater than initial balance
   // checks if fundraiser has ended
-  it('passes end to end', async () => {
+  // does not allow anymore donations
+  it('passes end to end test', async () => {
     // 1st donation to the fundraiser
     await fundMe.methods.donate().send({
       value: web3.utils.toWei('.25', 'ether'),
@@ -233,5 +256,17 @@ describe('Inbox', () => {
     isLive = await fundMe.methods.ongoing().call()
     // check fundraiser status, should not be live
     assert(!isLive)
+
+    try {
+      // someone tries to donate after fundraiser was ended
+      await fundMe.methods.donate().send({
+        value: web3.utils.toWei('.5', 'ether'),
+        from: accounts[2],
+        gas: 3000000
+      })
+      assert(false)
+    } catch (err) {
+      assert(err)
+    }
   })
 })
