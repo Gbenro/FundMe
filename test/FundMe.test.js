@@ -47,12 +47,12 @@ beforeEach(async () => {
 })
 
 describe('Inbox', () => {
-  it('deploys a factory and a campaign', () => {
+  it('deploys a fundMefactory and a fundMe contract', () => {
     assert.ok(factory.options.address)
     assert.ok(fundMe.options.address)
   })
 
-  it('marks caller as the fundMe recipient', async () => {
+  it('marks caller as fundMe recipient', async () => {
     const recipient = await fundMe.methods.recipient().call()
     assert.equal(accounts[0], recipient)
   })
@@ -113,7 +113,7 @@ describe('Inbox', () => {
     assert(!isLive)
   })
 
-  it('does not allow anyone else to withdraw', async () => {
+  it('does not allow anyone else to withdraw from contract', async () => {
     // donating to the fundraiser
     await fundMe.methods.donate().send({
       value: web3.utils.toWei('.5', 'ether'),
@@ -152,5 +152,86 @@ describe('Inbox', () => {
     let isLive = await fundMe.methods.ongoing().call()
     // check fundraiser status, should still be live
     assert(isLive)
+  })
+
+  // END TO END TEST
+  // contract takes two donations
+  // checks if two people donated
+  // recipient withdraws the balance amd makes contract balance 0
+  // fundraiser should still be live
+  // contracts takes third donation
+  // third donation should trigger end contract
+  // checks if there are 3 donors now
+  // check if contract balance is 0
+  // checks if goal was reached
+  // checks if recipient's balance is greater than initial balance
+  // checks if fundraiser has ended
+  it('passes end to end', async () => {
+    // 1st donation to the fundraiser
+    await fundMe.methods.donate().send({
+      value: web3.utils.toWei('.25', 'ether'),
+      from: accounts[1],
+      gas: 3000000
+    })
+
+    // 2nd donation to the fundraiser
+    await fundMe.methods.donate().send({
+      value: web3.utils.toWei('.25', 'ether'),
+      from: accounts[2],
+      gas: 3000000
+    })
+    // check if 2 people donated to the fundraiser
+    let donors = await fundMe.methods.donors().call()
+    console.log('donors:' + donors)
+    assert(donors == 2)
+
+    // recipient withdraws money from the contract
+    await fundMe.methods.withdraw().send({
+      from: accounts[0],
+      gas: 3000000
+    })
+
+    // gets the balance of the contract
+    // check if balance is 0
+    let balance = await web3.eth.getBalance(fundMeAddress)
+    console.log(balance)
+    assert(balance == 0)
+
+    let isLive = await fundMe.methods.ongoing().call()
+    // check fundraiser status, should still be live
+    assert(isLive)
+
+    // 3rd donation to the fundraiser, this donation should triiger end of fundraiser
+    await fundMe.methods.donate().send({
+      value: web3.utils.toWei('1', 'ether'),
+      from: accounts[3],
+      gas: 3000000
+    })
+
+    // check if 3 people has donated to this contract
+    donors = await fundMe.methods.donors().call()
+    assert(donors == 3)
+
+    // check contract balance is 0
+    balance = await web3.eth.getBalance(fundMeAddress)
+    assert(balance == 0)
+
+    // check if goal was reached
+    let goal = await fundMe.methods.amountNeeded().call()
+    let amountDonated = await fundMe.methods.amountSoFar.call()
+    // checking if greater because contract logic allows for more than goal
+    assert(amountDonated >= goal)
+
+    // checks recipient balance to see is funds was sent there after fundraiser ended automatically
+    let recipientBal = await web3.eth.getBalance(accounts[0])
+    recipientBal = web3.utils.fromWei(recipientBal, 'ether')
+    recipientBal = parseFloat(recipientBal)
+
+    console.log(recipientBal)
+    assert(recipientBal > 101)
+
+    isLive = await fundMe.methods.ongoing().call()
+    // check fundraiser status, should not be live
+    assert(!isLive)
   })
 })
