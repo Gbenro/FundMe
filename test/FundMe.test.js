@@ -121,7 +121,7 @@ describe('Inbox', () => {
       gas: 3000000
     })
     try {
-      // recipient withdraws money from the contract
+      // an address that is not recipient tries to withdraw money from the contract
       await fundMe.methods.withdraw().send({
         from: accounts[2],
         gas: 3000000
@@ -130,5 +130,27 @@ describe('Inbox', () => {
     } catch (err) {
       assert(err)
     }
+  })
+
+  it('does not allow anyone else to end fundraiser', async () => {
+    // donating to the fundraiser
+    await fundMe.methods.donate().send({
+      value: web3.utils.toWei('.5', 'ether'),
+      from: accounts[1],
+      gas: 3000000
+    })
+    try {
+      // another address that is not recipient tries to end the fundraiser
+      await fundMe.methods.end().send({
+        from: accounts[2],
+        gas: 3000000
+      })
+      assert(false)
+    } catch (err) {
+      assert(err)
+    }
+    let isLive = await fundMe.methods.ongoing().call()
+    // check fundraiser status, should still be live
+    assert(isLive)
   })
 })
