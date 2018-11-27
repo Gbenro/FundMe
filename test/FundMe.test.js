@@ -83,10 +83,23 @@ describe('Inbox', () => {
       from: accounts[0],
       gas: 3000000
     })
+
     // gets the balance of the contract
     // check if balance is 0
     let balance = await web3.eth.getBalance(fundMeAddress)
     console.log(balance)
     assert(balance == 0)
+  })
+
+  it('allows recipient to end fundraiser', async () => {
+    // recipient can end the fundraiser anytime
+    await fundMe.methods.end().send({
+      from: accounts[0],
+      gas: 3000000
+    })
+
+    let isLive = await fundMe.methods.ongoing().call()
+
+    assert(!isLive)
   })
 })
