@@ -112,4 +112,23 @@ describe('Inbox', () => {
     // check fundraiser status
     assert(!isLive)
   })
+
+  it('does not allow anyone else to withdraw', async () => {
+    // donating to the fundraiser
+    await fundMe.methods.donate().send({
+      value: web3.utils.toWei('.5', 'ether'),
+      from: accounts[1],
+      gas: 3000000
+    })
+    try {
+      // recipient withdraws money from the contract
+      await fundMe.methods.withdraw().send({
+        from: accounts[2],
+        gas: 3000000
+      })
+      assert(false)
+    } catch (err) {
+      assert(err)
+    }
+  })
 })
