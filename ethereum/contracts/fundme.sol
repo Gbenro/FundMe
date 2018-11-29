@@ -20,7 +20,7 @@ contract FundMeFactory {
     }
 
 
-    /// @notice gets addresses fundraiser contract already deployed
+    /// @notice gets the addresses  of fundraiser contract already deployed
     /// @return the array of fundraisers that are deployed by this contract
     function getDeployedFundraisers() public view returns (address[] memory ){
 
