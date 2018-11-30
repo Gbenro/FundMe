@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import factory from '../ethereum/factory'
-import { Button } from 'reactstrap'
-import Layout from '../components/Layout'
+// import { Button } from 'reactstrap'
+import Layout from '../src/components/Layout'
 
 class FundMeIndex extends Component {
   static async getInitialProps () {
@@ -14,14 +14,7 @@ class FundMeIndex extends Component {
     return (
       <Layout>
         <div>
-          <link
-            rel='stylesheet'
-            href='https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css'
-            integrity='sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm'
-            crossOrigin='anonymous'
-          />
-          Fund Me {this.props.fundraiser}
-          <button className='btn btn-success'> Press Me</button>
+          <h1 className='header'>Fund Me {this.props.fundraiser}</h1>
         </div>
       </Layout>
     )
