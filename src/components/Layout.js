@@ -4,12 +4,10 @@ import Footer from './Footer'
 
 export default props => {
   return (
-    <div>
+    <div className='ui container'>
       <link
         rel='stylesheet'
-        href='https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css'
-        integrity='sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm'
-        crossOrigin='anonymous'
+        href='https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.css'
       />
       <Header />
       {props.children}

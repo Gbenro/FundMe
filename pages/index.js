@@ -13,9 +13,17 @@ class FundMeIndex extends Component {
   render () {
     return (
       <Layout>
-        <div>
+        <div className='container'>
+          <h1> Welcome to Fundraising on the blockchain</h1>
           <h1 className='header'>Fund Me {this.props.fundraiser}</h1>
         </div>
+
+        <style jsx>{`
+          h1 {
+            color: red;
+          }
+          
+        `}</style>
       </Layout>
     )
   }

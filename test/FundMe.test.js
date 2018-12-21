@@ -3,8 +3,8 @@ const ganache = require('ganache-cli')
 const Web3 = require('web3')
 const web3 = new Web3(ganache.provider())
 
-const compiledFactory = require('../build/FundMeFactory.json')
-const compiledFundMe = require('../build/FundMe.json')
+const compiledFactory = require('../ethereum/build/FundMeFactory.json')
+const compiledFundMe = require('../ethereum/build/FundMe.json')
 
 // The list of accounts from ganache
 let accounts
@@ -46,7 +46,7 @@ beforeEach(async () => {
   )
 })
 
-describe('Inbox', () => {
+describe('FundMe', () => {
   it('deploys a fundMefactory and a fundMe contract', () => {
     assert.ok(factory.options.address)
     assert.ok(fundMe.options.address)
