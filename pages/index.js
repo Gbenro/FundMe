@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import factory from '../ethereum/factory'
-// import { Button } from 'reactstrap'
+
 import Layout from '../src/components/Layout'
 
 class FundMeIndex extends Component {
@@ -22,7 +22,6 @@ class FundMeIndex extends Component {
           h1 {
             color: red;
           }
-          
         `}</style>
       </Layout>
     )
