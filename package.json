@@ -17,6 +17,7 @@
     "next-routes": "^1.4.2",
     "react": "^16.6.3",
     "react-dom": "^16.6.3",
+    "react-helmet": "^5.2.0",
     "solc": "^0.4.25",
     "style-loader": "^0.23.1",
     "truffle-hdwallet-provider": "0.0.3",

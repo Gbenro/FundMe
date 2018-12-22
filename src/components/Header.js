@@ -1,5 +1,6 @@
 import React from 'react'
 import Link from 'next/link'
+import GoogleAuth from './GoogleAuth'
 
 class Header extends React.Component {
   render () {
@@ -22,7 +23,9 @@ class Header extends React.Component {
               <i className='search link icon' />
             </div>
           </div>
-          <a className='ui  grey item'>Log In</a>
+          <div className='ui item'>
+            <GoogleAuth />
+          </div>
         </div>
       </div>
     )
