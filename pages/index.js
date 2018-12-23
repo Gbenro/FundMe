@@ -1,25 +1,30 @@
 import React, { Component } from 'react'
 import factory from '../ethereum/factory'
 
-import { Button } from 'reactstrap'
+import Layout from '../src/components/Layout'
 
-class FundMeIndex extends Component() {
-  constructor (props) {
-    super(props)
-  }
-  // static async getInitialProps () {
-  //   console.log('here')
-  //   const fundMe = await factory.methods.getDeployedFundraisers().call()
+class FundMeIndex extends Component {
+  static async getInitialProps () {
+    const fundraiser = await factory.methods.getDeployedFundraisers().call()
 
-  //   return { fundMe }
-  // }
-  async componentDidMount () {
-    const fundMe = await factory.methods.getDeployedFundraisers().call()
-    console.log(fundMe)
+    return { fundraiser }
   }
 
   render () {
-    return <div>FundMe Index</div>
+    return (
+      <Layout>
+        <div className='container'>
+          <h1> Welcome to Fundraising on the blockchain</h1>
+          <h1 className='header'>Fund Me {this.props.fundraiser}</h1>
+        </div>
+
+        <style jsx>{`
+          h1 {
+            color: red;
+          }
+        `}</style>
+      </Layout>
+    )
   }
 }
 

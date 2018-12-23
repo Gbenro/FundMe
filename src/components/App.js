@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import FundMeIndex from '../../pages'
+import FundIndex from '../../pages'
 
 class App extends Component {
   render () {

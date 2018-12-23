@@ -1,15 +1,12 @@
 import React from 'react'
 
-export default props => {
+export default () => {
   return (
-    <footer id='main-footer' className='text-center p-4'>
-      <div className='container'>
-        <div className='row'>
-          <div className='col'>
-            <p>Copyright© <span id='year' /></p>
-          </div>
-        </div>
-      </div>
-    </footer>
+    <div
+      className='ui inverted footer segment '
+      style={{ textAlign: 'center' }}
+    >
+      <div className='ui container'>Copyright&copy; 2019 FundMe</div>
+    </div>
   )
 }
